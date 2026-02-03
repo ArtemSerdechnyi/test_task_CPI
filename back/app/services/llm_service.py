@@ -1,33 +1,30 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 
-from back.app.prompts.prompts import (
-    SYSTEM_MESSAGE, 
-    AI_ANALYST_USER_TEMPLATE
-)
+from back.app.prompts.prompts import SYSTEM_MESSAGE, AI_ANALYST_USER_TEMPLATE
 from back.app.schemas.valuation import AIPromptSchema
 
 
 class LLMService:
     def __init__(self, api_key: str, model: str):
         self._model = model
-        self._client = OpenAI(api_key=api_key)
+        self._client = AsyncOpenAI(api_key=api_key)
 
-    def get_llm_analysis(self, finance_data: AIPromptSchema) -> str:
+    async def get_llm_analysis(self, finance_data: AIPromptSchema) -> str:
         populated_main_prompt = self.format_main_prompt(finance_data)
         template_messages = self.format_messages_payload(
             system_prompt=SYSTEM_MESSAGE, main_prompt=populated_main_prompt
         )
-        llm_response = self.gpt_request(template_messages=template_messages)
+        llm_response = await self.gpt_request(template_messages=template_messages)
 
         return llm_response
 
-    def gpt_request(self, template_messages: list[dict[str, str]]) -> str:
-        llm_response = self._client.responses.create(
+    async def gpt_request(self, template_messages: list[dict[str, str]]) -> str:
+        llm_response = await self._client.chat.completions.create(
             model=self._model,
-            input=template_messages,
+            messages=template_messages,
         )
 
-        return llm_response.output[0].content[0].text
+        return llm_response.choices[0].message.content
 
     @staticmethod
     def format_main_prompt(data: AIPromptSchema) -> str:

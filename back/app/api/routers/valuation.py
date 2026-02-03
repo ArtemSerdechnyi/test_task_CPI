@@ -64,7 +64,7 @@ async def get_ai_analysis(
             cpi_base_2001=result.cpi_base_2001,
         )
 
-        analysis = llm_service.get_llm_analysis(mapped_result)
+        analysis = await llm_service.get_llm_analysis(mapped_result)
         return analysis
 
     except Exception as e:
