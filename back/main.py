@@ -7,8 +7,8 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from back.app.api.routers import main_router
 from back.app.core.config import settings
-
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
@@ -18,7 +18,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 
 def _include_router(app: FastAPI) -> None:
-    pass
+    app.include_router(main_router.router)
 
 def _add_middleware(app: FastAPI) -> None:
     # Add CORS middleware
