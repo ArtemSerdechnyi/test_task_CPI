@@ -59,5 +59,3 @@ class GermanyHistoricalCpiParser:
         return {"detail": "Data parsed into mapper successfully."}
 
 germany_historical_cpi_parser = GermanyHistoricalCpiParser()
-germany_historical_cpi_parser.parse_into_mapper()
-

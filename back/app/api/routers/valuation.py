@@ -16,23 +16,16 @@ async def calculate_valuation(
         valuation_service: valuation_service_dep,
 ) -> ValuationResult:
     """
-    Рассчитать оценку недвижимости по методу капитализации доходов
-
-    - **property_type**: Тип недвижимости (residential/commercial)
-    - **purchase_date**: Дата покупки (для определения CPI)
-    - **monthly_net_rent**: Месячная чистая аренда в €
-    - **living_area**: Площадь в м²
-    - И другие параметры...
-
-    Возвращает полный расчет с распределением стоимости земли и здания
+    Calculate a real estate valuation using the income capitalization method.
     """
 
     try:
-        # Получаем CPI за октябрь года, предшествующего дате покупки
-        index_value = cpi_service.get_cpi(year=input_data.purchase_date.year, month=input_data.purchase_date.month)
-        cpi_data = CPIData(month=input_data.purchase_date.month, year=input_data.purchase_date.year, index_value=index_value)
+        year = input_data.purchase_date.year
+        month = input_data.purchase_date.month
 
-        # Выполняем расчет оценки
+        index_value = cpi_service.get_cpi(year=year, month=month)
+        cpi_data = CPIData(year=year, month=month, index_value=index_value)
+
         result = valuation_service.calculate_valuation(input_data, cpi_data)
 
         return result
@@ -42,45 +35,40 @@ async def calculate_valuation(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.exception(e)
-        raise HTTPException(status_code=500, detail=f"Ошибка расчета: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
 
 
 @valuation_router.post("/calculate/analysis")
 async def get_ai_analysis(
-        result: ValuationResult,
-        llm_service: llm_service_dep,
+    result: ValuationResult,
+    llm_service: llm_service_dep,
 ) -> str:
     """
-    Получить AI-анализ результатов оценки
-
-    Принимает результат расчета и возвращает:
-    - Детальный анализ с контекстом
-    - Влияние типа недвижимости
-    - Объяснение инфляционной корректировки
-    - Сравнение с рыночной ценой
-    - Ключевые выводы
+    Generate an AI-powered analysis of the valuation results.
     """
-    mapped_result = AIPromptSchema(
-        property_type=result.input_data.property_type,
-        purchase_date=result.input_data.purchase_date.isoformat(),
-        actual_purchase_price=result.input_data.actual_purchase_price,
-        theoretical_total_value=result.theoretical_total_value,
-        building_share_percent=result.building_share_percent,
-        land_share_percent=result.land_share_percent,
-        admin_costs=result.management_costs.administration,
-        maintenance_costs=result.management_costs.maintenance,
-        risk_amount=result.management_costs.risk_of_rent_loss,
-        risk_percentage=result.management_costs.risk_percentage,
-        index_factor=result.index_factor,
-        cpi_value=result.cpi_used.index_value,
-        cpi_base_2001=result.cpi_base_2001,
-    )
+
     try:
+        mapped_result = AIPromptSchema(
+            property_type=result.input_data.property_type,
+            purchase_date=result.input_data.purchase_date.isoformat(),
+            actual_purchase_price=result.input_data.actual_purchase_price,
+            theoretical_total_value=result.theoretical_total_value,
+            building_share_percent=result.building_share_percent,
+            land_share_percent=result.land_share_percent,
+            admin_costs=result.management_costs.administration,
+            maintenance_costs=result.management_costs.maintenance,
+            risk_amount=result.management_costs.risk_of_rent_loss,
+            risk_percentage=result.management_costs.risk_percentage,
+            index_factor=result.index_factor,
+            cpi_value=result.cpi_used.index_value,
+            cpi_base_2001=result.cpi_base_2001,
+        )
+
         analysis = llm_service.get_llm_analysis(mapped_result)
         return analysis
 
     except Exception as e:
         logger.exception(e)
-        raise HTTPException(status_code=500, detail=f"Ошибка AI-анализа: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI analysis error {str(e)}")
 
 

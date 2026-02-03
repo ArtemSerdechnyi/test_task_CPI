@@ -8,7 +8,7 @@ from back.app.schemas.valuation import CPIData
 cpi_router = APIRouter()
 
 
-@cpi_router.get("/cpi/{year}/{month}")
+@cpi_router.get("/{year}/{month}")
 async def get_cpi(
     year: int,
     month: int,

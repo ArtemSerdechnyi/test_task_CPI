@@ -9,10 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from back.app.api.routers import main_router
 from back.app.core.config import settings
+from back.app.services.cpi_parser import germany_historical_cpi_parser
+
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     logger.info("Starting app...")
+    germany_historical_cpi_parser.parse_into_mapper()
     yield
     logger.info("Application stopped.")
 

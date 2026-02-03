@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
 from datetime import date
-from enum import Enum
+from enum import StrEnum
 from typing import Optional
 
 
-class PropertyType(str, Enum):
+class PropertyType(StrEnum):
     RESIDENTIAL = "residential"
     COMMERCIAL = "commercial"
 
