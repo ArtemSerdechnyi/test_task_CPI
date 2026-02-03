@@ -3,8 +3,8 @@
 from fastapi import APIRouter, HTTPException
 from loguru import logger
 
-from back.app.api.dependencies import cpi_service_dep, valuation_service_dep, ai_service_dep
-from back.app.schemas.valuation import ValuationInput, ValuationResult, CPIData, AIAnalysisResponse
+from back.app.api.dependencies import cpi_service_dep, valuation_service_dep, llm_service_dep
+from back.app.schemas.valuation import ValuationInput, ValuationResult, CPIData, AIAnalysisResponse, AIPromptSchema
 
 valuation_router = APIRouter()
 
@@ -45,11 +45,11 @@ async def calculate_valuation(
         raise HTTPException(status_code=500, detail=f"Ошибка расчета: {str(e)}")
 
 
-@valuation_router.post("/calculate/{valuation_id}/analysis")
+@valuation_router.post("/calculate/analysis")
 async def get_ai_analysis(
         result: ValuationResult,
-        ai_service: ai_service_dep,
-) -> AIAnalysisResponse:
+        llm_service: llm_service_dep,
+) -> str:
     """
     Получить AI-анализ результатов оценки
 
@@ -60,12 +60,27 @@ async def get_ai_analysis(
     - Сравнение с рыночной ценой
     - Ключевые выводы
     """
-
+    mapped_result = AIPromptSchema(
+        property_type=result.input_data.property_type,
+        purchase_date=result.input_data.purchase_date.isoformat(),
+        actual_purchase_price=result.input_data.actual_purchase_price,
+        theoretical_total_value=result.theoretical_total_value,
+        building_share_percent=result.building_share_percent,
+        land_share_percent=result.land_share_percent,
+        admin_costs=result.management_costs.administration,
+        maintenance_costs=result.management_costs.maintenance,
+        risk_amount=result.management_costs.risk_of_rent_loss,
+        risk_percentage=result.management_costs.risk_percentage,
+        index_factor=result.index_factor,
+        cpi_value=result.cpi_used.index_value,
+        cpi_base_2001=result.cpi_base_2001,
+    )
     try:
-        analysis = await ai_service.analyze_valuation(result)
+        analysis = llm_service.get_llm_analysis(mapped_result)
         return analysis
 
     except Exception as e:
+        logger.exception(e)
         raise HTTPException(status_code=500, detail=f"Ошибка AI-анализа: {str(e)}")
 
 

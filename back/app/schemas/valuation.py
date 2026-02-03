@@ -74,3 +74,18 @@ class AIAnalysisRequest(BaseModel):
 class AIAnalysisResponse(BaseModel):
     analysis: str
     key_points: list[str]
+
+class AIPromptSchema(BaseModel):
+    property_type: PropertyType
+    purchase_date: str
+    actual_purchase_price: float
+    theoretical_total_value: float
+    building_share_percent: float
+    land_share_percent: float
+    admin_costs: float
+    maintenance_costs: float
+    risk_percentage: float
+    risk_amount: float
+    index_factor: float
+    cpi_value: float
+    cpi_base_2001: float

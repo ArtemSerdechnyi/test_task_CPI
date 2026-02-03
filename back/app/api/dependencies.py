@@ -1,8 +1,8 @@
 from typing import Annotated
 from fastapi import Depends
 
-from back.app.services.ai_analysis_service import AIAnalysisService
 from back.app.services.cpi_service import CPIService
+from back.app.services.llm_service import LLMService
 from back.app.services.valuation_service import ValuationService
 
 
@@ -16,7 +16,7 @@ def get_valuation_service() -> ValuationService:
 
 valuation_service_dep = Annotated[ValuationService, Depends(get_valuation_service)]
 
-def get_ai_service() -> AIAnalysisService:
-    return AIAnalysisService()
+def get_llm_service() -> LLMService:
+    return LLMService()
 
-ai_service_dep = Annotated[AIAnalysisService, Depends(get_ai_service)]
+llm_service_dep = Annotated[LLMService, Depends(get_llm_service)]
