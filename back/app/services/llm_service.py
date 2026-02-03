@@ -1,6 +1,5 @@
 from openai import OpenAI
 
-from back.app.core.config import settings
 from back.app.prompts.prompts import (
     SYSTEM_MESSAGE, 
     AI_ANALYST_USER_TEMPLATE
@@ -9,8 +8,9 @@ from back.app.schemas.valuation import AIPromptSchema
 
 
 class LLMService:
-    def __init__(self):
-        self.openai_client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    def __init__(self, api_key: str, model: str):
+        self._model = model
+        self._client = OpenAI(api_key=api_key)
 
     def get_llm_analysis(self, finance_data: AIPromptSchema) -> str:
         populated_main_prompt = self.format_main_prompt(finance_data)
@@ -22,8 +22,8 @@ class LLMService:
         return llm_response
 
     def gpt_request(self, template_messages: list[dict[str, str]]) -> str:
-        llm_response = self.openai_client.responses.create(
-            model=settings.LLM,
+        llm_response = self._client.responses.create(
+            model=self._model,
             input=template_messages,
         )
 

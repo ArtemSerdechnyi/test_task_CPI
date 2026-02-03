@@ -3,7 +3,8 @@ from back.app.services.cpi_parser import germany_historical_cpi_parser
 
 
 class CPIService:
-    _cpi_mapper = germany_historical_cpi_parser.cpi_data
+    def __init__(self, cpi_mapper: dict[CpiPeriod, str]):
+        self._cpi_mapper = cpi_mapper
 
     def get_cpi(self, year: int, month: int) -> str | None:
         key = CpiPeriod(year=year, month=month)
