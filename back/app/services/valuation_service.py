@@ -12,9 +12,9 @@ class ValuationService:
     CPI_BASE_OCT_2001 = 84.5  # Фиксированное значение
 
     def calculate_valuation(
-            self,
-            input_data: ValuationInput,
-            cpi_data: CPIData
+        self,
+        input_data: ValuationInput,
+        cpi_data: CPIData
     ) -> ValuationResult:
         """
         Основной метод расчета оценки

@@ -1,6 +1,7 @@
-from http.client import HTTPException
 
-from fastapi import APIRouter
+
+from fastapi import APIRouter, HTTPException
+from loguru import logger
 
 from back.app.api.dependencies import cpi_service_dep, valuation_service_dep, ai_service_dep
 from back.app.schemas.valuation import ValuationInput, ValuationResult, CPIData, AIAnalysisResponse
@@ -28,8 +29,8 @@ async def calculate_valuation(
 
     try:
         # Получаем CPI за октябрь года, предшествующего дате покупки
-        cpi_data_dict = await cpi_service.get_cpi_for_purchase_date(input_data.purchase_date)
-        cpi_data = CPIData(**cpi_data_dict)
+        index_value = cpi_service.get_cpi(year=input_data.purchase_date.year, month=input_data.purchase_date.month)
+        cpi_data = CPIData(month=input_data.purchase_date.month, year=input_data.purchase_date.year, index_value=index_value)
 
         # Выполняем расчет оценки
         result = valuation_service.calculate_valuation(input_data, cpi_data)
@@ -37,8 +38,10 @@ async def calculate_valuation(
         return result
 
     except ValueError as e:
+        logger.exception(e)
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        logger.exception(e)
         raise HTTPException(status_code=500, detail=f"Ошибка расчета: {str(e)}")
 
 

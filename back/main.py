@@ -21,23 +21,25 @@ def _include_router(app: FastAPI) -> None:
     app.include_router(main_router.router)
 
 def _add_middleware(app: FastAPI) -> None:
+    pass
     # Add CORS middleware
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.FRONTEND_URLS if settings.FRONTEND_URLS else ["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    # app.add_middleware(
+    #     CORSMiddleware,
+    #     allow_origins=settings.FRONTEND_URLS if settings.FRONTEND_URLS else ["*"],
+    #     allow_credentials=True,
+    #     allow_methods=["*"],
+    #     allow_headers=["*"],
+    # )
 
 def create_app() -> FastAPI:
     app = FastAPI(
         lifespan=lifespan,
-        title="COA_API",
+        title="CPI",
     )
 
     _include_router(app)
     _add_middleware(app)
+    return app
 
 if __name__ == "__main__":
     uvicorn.run(
