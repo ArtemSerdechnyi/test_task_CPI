@@ -1,0 +1,155 @@
+<section class="page">
+  <header class="page__header">
+    <h1>KPA Tool</h1>
+  </header>
+
+  <app-valuation-form
+    [submitting]="isSubmitting"
+    (calculate)="onCalculate($event)"
+  ></app-valuation-form>
+
+  @if (isSubmitting) {
+    <p class="status">Calculating… Please wait.</p>
+  }
+
+  @if (errorText) {
+    <p class="api-error">{{ errorText }}</p>
+  }
+
+  @if (result) {
+    <section class="result">
+      <div class="result__grid">
+        <div class="card">
+          <h3>Building</h3>
+          <p class="big">
+            {{ result.building_share_percent / 100 | percent: "1.1-1" }}
+          </p>
+          <p class="money">
+            {{
+              result.actual_building_value
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </p>
+          <p class="muted">
+            theoretical:
+            {{
+              result.theoretical_building_value
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Land</h3>
+          <p class="big">
+            {{ result.land_share_percent / 100 | percent: "1.1-1" }}
+          </p>
+          <p class="money">
+            {{
+              result.actual_land_value | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </p>
+          <p class="muted">
+            land value:
+            {{ result.land_value | currency: "EUR" : "symbol" : "1.0-0" }}
+          </p>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="meta__row">
+          <span class="meta__label">Theoretical total</span>
+          <span class="meta__value">
+            {{
+              result.theoretical_total_value
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </span>
+        </div>
+
+        <div class="meta__row">
+          <span class="meta__label">Annual gross income</span>
+          <span class="meta__value">
+            {{
+              result.annual_gross_income | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </span>
+        </div>
+
+        <div class="meta__row">
+          <span class="meta__label">Annual net income</span>
+          <span
+            class="meta__value"
+            [class.negative]="result.annual_net_income < 0"
+          >
+            {{
+              result.annual_net_income | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </span>
+        </div>
+
+        <div class="meta__row">
+          <span class="meta__label">CPI used</span>
+          <span class="meta__value">
+            {{ result.cpi_used.month }}/{{ result.cpi_used.year }} (base
+            {{ result.cpi_used.base_year }}=100), index
+            {{ result.cpi_used.index_value | number: "1.1-1" }}
+          </span>
+        </div>
+
+        <div class="meta__row">
+          <span class="meta__label">Index factor</span>
+          <span class="meta__value">{{
+            result.index_factor | number: "1.3-3"
+          }}</span>
+        </div>
+
+        <div class="meta__row meta__row--wrap">
+          <span class="meta__label">Management costs</span>
+          <span class="meta__value">
+            admin
+            {{
+              result.management_costs.administration
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}, maint
+            {{
+              result.management_costs.maintenance
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}, rent loss
+            {{
+              result.management_costs.risk_of_rent_loss
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}, total
+            {{
+              result.management_costs.total
+                | currency: "EUR" : "symbol" : "1.0-0"
+            }}
+          </span>
+        </div>
+      </div>
+      <div class="actions-row">
+        <button
+          class="btn"
+          type="button"
+          (click)="onGenerateInsight()"
+          [disabled]="isAnalyzing"
+        >
+          @if (isAnalyzing) {
+            Generating insight…
+          } @else {
+            Get AI analysis
+          }
+        </button>
+      </div>
+
+      @if (insightText) {
+        <h2 class="section-title">Analyst insight</h2>
+        <pre class="resultText">{{ insightText }}</pre>
+      }
+
+      @if (insightError) {
+        <p class="api-error">{{ insightError }}</p>
+      }
+    </section>
+  }
+</section>
