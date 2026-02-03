@@ -92,11 +92,6 @@ class GermanyHistoricalCpiParser:
 
         return {"detail": "Data parsed into mapper successfully."}
 
-    def get_cpi(self, year: int, month: int) -> str | None:
-        """Получить CPI по году и месяцу."""
-        key = CpiPeriod(year=year, month=month)
-        return self.cpi_data.get(key)
-
 germany_historical_cpi_parser = GermanyHistoricalCpiParser()
 germany_historical_cpi_parser.parse_into_mapper()
 
