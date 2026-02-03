@@ -8,7 +8,7 @@ cpi_router = APIRouter()
 
 
 @cpi_router.get("/{year}/{month}")
-async def get_cpi(
+def get_cpi(
     year: int,
     month: int,
     cpi_service: cpi_service_dep,
