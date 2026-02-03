@@ -16,7 +16,7 @@ class Settings(_BaseConfig):
     RELOAD: bool = True
     FRONTEND_URLS: list[str]
     OPENAI_API_KEY: str
-    LLM: str = "gpt-5-nano"
+    LLM: str = "gpt-4o"
 
 
 settings = Settings()

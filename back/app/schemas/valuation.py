@@ -35,6 +35,7 @@ class ManagementCosts(BaseModel):
     maintenance: float
     risk_of_rent_loss: float
     total: float
+    risk_percentage: float
 
 
 class ValuationResult(BaseModel):
