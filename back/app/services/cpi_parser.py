@@ -1,6 +1,13 @@
-import requests
+import httpx
 from bs4 import BeautifulSoup
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_exponential,
+    retry_if_exception_type,
+)
 
+from back.app.core.config import settings
 from back.app.schemas.cpi import CpiPeriod
 
 __all__ = ["germany_historical_cpi_parser"]
@@ -9,7 +16,7 @@ class GermanyHistoricalCpiParser:
     cpi_data: dict[CpiPeriod, str] = {}
 
     def __init__(self):
-        self.url = "https://www.rateinflation.com/consumer-price-index/germany-historical-cpi/"
+        self.url = settings.CPI_SOURCE_URL
         self.headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
     months = {
@@ -27,9 +34,24 @@ class GermanyHistoricalCpiParser:
         "dec": "12"
     }
 
-    def parse_into_mapper(self) -> dict[str, str]:
-        response = requests.get(self.url, headers=self.headers)
-        soup = BeautifulSoup(response.content, "html.parser")
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_exception_type(
+            (httpx.RequestError, httpx.HTTPStatusError)
+        ),
+        reraise=True,
+    )
+    async def _fetch_page(self) -> bytes:
+        async with httpx.AsyncClient(headers=self.headers, timeout=30) as client:
+            response = await client.get(self.url)
+            response.raise_for_status()
+            return response.content
+
+    async def parse_into_mapper(self) -> dict[str, str]:
+        html = await self._fetch_page()
+
+        soup = BeautifulSoup(html, "html.parser")
 
         table = soup.find("table")
         if not table:
