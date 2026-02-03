@@ -1,4 +1,3 @@
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
@@ -27,39 +26,6 @@ class GermanyHistoricalCpiParser:
         "nov": "11",
         "dec": "12"
     }
-
-    def parse_into_csv(self) -> dict[str, str]:
-        response = requests.get(self.url, headers=self.headers)
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        table = soup.find("table")
-        if not table:
-            return {"detail": "Data not found."}
-
-        headers_row = [th.text.strip() for th in table.find("thead").find_all("th")]
-
-        rows = []
-        for tr in table.find("tbody").find_all("tr"):
-            cells = tr.find_all("td")
-            if not cells:
-                continue
-
-            year = cells[0].text.strip()
-
-            for i in range(1, 13):
-                month_name = self.months[headers_row[i]]
-                value = cells[i].text.strip()
-
-                if value:
-                    rows.append({
-                        "Date": f"{year}-{month_name}",
-                        "CPI": value
-                    })
-
-        df = pd.DataFrame(rows)
-
-        df.to_csv("germany_cpi_historical.csv", index=False, encoding="utf-8")
-        return {"detail": "Data parsed successfully."}
 
     def parse_into_mapper(self) -> dict[str, str]:
         response = requests.get(self.url, headers=self.headers)
