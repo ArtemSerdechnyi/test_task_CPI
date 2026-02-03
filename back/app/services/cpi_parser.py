@@ -12,12 +12,15 @@ from back.app.schemas.cpi import CpiPeriod
 
 __all__ = ["germany_historical_cpi_parser"]
 
+
 class GermanyHistoricalCpiParser:
     cpi_data: dict[CpiPeriod, str] = {}
 
     def __init__(self):
         self.url = settings.CPI_SOURCE_URL
-        self.headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
 
     months = {
         "jan": "01",
@@ -31,15 +34,13 @@ class GermanyHistoricalCpiParser:
         "sep": "09",
         "oct": "10",
         "nov": "11",
-        "dec": "12"
+        "dec": "12",
     }
 
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type(
-            (httpx.RequestError, httpx.HTTPStatusError)
-        ),
+        retry=retry_if_exception_type((httpx.RequestError, httpx.HTTPStatusError)),
         reraise=True,
     )
     async def _fetch_page(self) -> bytes:
@@ -57,7 +58,9 @@ class GermanyHistoricalCpiParser:
         if not table:
             return {"detail": "Data not found."}
 
-        headers_row = [th.text.strip().lower() for th in table.find("thead").find_all("th")]
+        headers_row = [
+            th.text.strip().lower() for th in table.find("thead").find_all("th")
+        ]
 
         for tr in table.find("tbody").find_all("tr"):
             cells = tr.find_all("td")
@@ -79,5 +82,6 @@ class GermanyHistoricalCpiParser:
                     self.cpi_data[key] = value
 
         return {"detail": "Data parsed into mapper successfully."}
+
 
 germany_historical_cpi_parser = GermanyHistoricalCpiParser()

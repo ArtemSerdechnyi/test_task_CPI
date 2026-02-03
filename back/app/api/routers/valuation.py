@@ -1,19 +1,27 @@
-
-
 from fastapi import APIRouter, HTTPException
 from loguru import logger
 
-from back.app.api.dependencies import cpi_service_dep, valuation_service_dep, llm_service_dep
-from back.app.schemas.valuation import ValuationInput, ValuationResult, CPIData, AIAnalysisResponse, AIPromptSchema
+from back.app.api.dependencies import (
+    cpi_service_dep,
+    valuation_service_dep,
+    llm_service_dep,
+)
+from back.app.schemas.valuation import (
+    ValuationInput,
+    ValuationResult,
+    CPIData,
+    AIAnalysisResponse,
+    AIPromptSchema,
+)
 
 valuation_router = APIRouter()
 
 
 @valuation_router.post("/calculate")
 async def calculate_valuation(
-        input_data: ValuationInput,
-        cpi_service: cpi_service_dep,
-        valuation_service: valuation_service_dep,
+    input_data: ValuationInput,
+    cpi_service: cpi_service_dep,
+    valuation_service: valuation_service_dep,
 ) -> ValuationResult:
     """
     Calculate a real estate valuation using the income capitalization method.
@@ -70,5 +78,3 @@ async def get_ai_analysis(
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=500, detail=f"AI analysis error {str(e)}")
-
-

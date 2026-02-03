@@ -1,9 +1,6 @@
 from openai import OpenAI
 
-from back.app.prompts.prompts import (
-    SYSTEM_MESSAGE, 
-    AI_ANALYST_USER_TEMPLATE
-)
+from back.app.prompts.prompts import SYSTEM_MESSAGE, AI_ANALYST_USER_TEMPLATE
 from back.app.schemas.valuation import AIPromptSchema
 
 

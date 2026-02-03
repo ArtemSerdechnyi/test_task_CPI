@@ -72,6 +72,7 @@ class AIAnalysisResponse(BaseModel):
     analysis: str
     key_points: list[str]
 
+
 class AIPromptSchema(BaseModel):
     property_type: PropertyType
     purchase_date: str

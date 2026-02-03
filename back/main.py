@@ -23,6 +23,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 def _include_router(app: FastAPI) -> None:
     app.include_router(main_router.router)
 
+
 def _add_middleware(app: FastAPI) -> None:
     # Add CORS middleware
     app.add_middleware(
@@ -33,6 +34,7 @@ def _add_middleware(app: FastAPI) -> None:
         allow_headers=["*"],
     )
 
+
 def create_app() -> FastAPI:
     app = FastAPI(
         lifespan=lifespan,
@@ -42,6 +44,7 @@ def create_app() -> FastAPI:
     _include_router(app)
     _add_middleware(app)
     return app
+
 
 if __name__ == "__main__":
     uvicorn.run(
