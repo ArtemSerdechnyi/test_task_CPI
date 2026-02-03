@@ -1,0 +1,110 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="columns">
+    <div class="col">
+      <label class="field">
+        <span>Property type</span>
+        <select formControlName="propertyType">
+          @for (t of propertyTypes; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Purchase date</span>
+        <input type="date" formControlName="purchaseDate" />
+      </label>
+
+      <label class="field">
+        <span>Monthly net cold rent (€)</span>
+        <input
+          type="number"
+          formControlName="monthlyNetColdRentEur"
+          min="0"
+          step="0.01"
+        />
+      </label>
+
+      <label class="field">
+        <span>Living / Usable area (m²)</span>
+        <input type="number" formControlName="areaSqm" min="0" step="0.1" />
+      </label>
+
+      <label class="field">
+        <span>Number of residential units</span>
+        <input
+          type="number"
+          formControlName="numberOfResidentialUnits"
+          min="1"
+          step="1"
+        />
+      </label>
+      <label class="field">
+        <span>Actual purchase price (€)</span>
+        <input
+          type="number"
+          formControlName="actualPurchasePriceEur"
+          min="0"
+          step="1"
+        />
+      </label>
+    </div>
+
+    <div class="col">
+      <label class="field">
+        <span>Number of garage / parking units</span>
+        <input
+          type="number"
+          formControlName="numberOfParkingUnits"
+          min="0"
+          step="1"
+        />
+      </label>
+
+      <label class="field">
+        <span>Standard land value (€/m²)</span>
+        <input
+          type="number"
+          formControlName="standardLandValueEurPerSqm"
+          min="0"
+          step="1"
+        />
+      </label>
+
+      <label class="field">
+        <span>Plot area (m²)</span>
+        <input type="number" formControlName="plotAreaSqm" min="0" step="0.1" />
+      </label>
+
+      <label class="field">
+        <span>Remaining useful life (years)</span>
+        <input
+          type="number"
+          formControlName="remainingUsefulLifeYears"
+          min="1"
+          step="1"
+        />
+      </label>
+
+      <label class="field">
+        <span>Property yield (%)</span>
+        <input
+          type="number"
+          formControlName="propertyYieldPercent"
+          min="0"
+          step="0.01"
+        />
+      </label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" type="submit" [disabled]="form.invalid || submitting">
+      @if (submitting) {
+        Calculating…
+      } @else {
+        Calculate
+      }
+    </button>
+  </div>
+</form>
