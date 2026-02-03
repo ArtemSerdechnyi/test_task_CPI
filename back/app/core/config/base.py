@@ -15,6 +15,8 @@ class Settings(_BaseConfig):
     SERVER_PORT: int
     RELOAD: bool = True
     FRONTEND_URLS: list[str]
+    OPENAI_API_KEY: str
+    LLM: str = "gpt-5-nano"
 
 
 settings = Settings()
