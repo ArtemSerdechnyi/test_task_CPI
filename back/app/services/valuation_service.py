@@ -1,11 +1,12 @@
 import math
 
+from back.app.core.constants import CPI_BASE_OCT_2001
 from back.app.schemas.valuation import ValuationInput, CPIData, ValuationResult, ManagementCosts, PropertyType
 
 
 class ValuationService:
     # CPI / INDEX
-    CPI_BASE_OCT_2001 = 84.5
+    CPI_BASE_OCT_2001 = CPI_BASE_OCT_2001
     MONTHS_IN_YEAR = 12
 
     # RESIDENTIAL CONSTANTS
@@ -179,7 +180,7 @@ class ValuationService:
         return multiplier
 
     @staticmethod
-    def _round_euro(value: float) -> float:
+    def _round_euro(value: float) -> float | None:
         if value is None:
             return None
         return round(value)

@@ -5,3 +5,4 @@ loguru==0.7.3
 fastapi==0.128.0
 pydantic-settings==2.12.0
 openai==2.16.0
+ruff==0.14.14
