@@ -1,6 +1,3 @@
-"""
-Fixtures specific to ValuationService unit tests
-"""
 import pytest
 from decimal import Decimal
 
@@ -10,13 +7,11 @@ from back.app.schemas.valuation import CpiData
 
 @pytest.fixture
 def valuation_service():
-    """Create ValuationService instance"""
     return ValuationService()
 
 
 @pytest.fixture
 def cpi_data_high_inflation():
-    """CPI data representing high inflation period"""
     return CpiData(
         year=2024,
         month=1,
@@ -27,7 +22,6 @@ def cpi_data_high_inflation():
 
 @pytest.fixture
 def cpi_data_low_inflation():
-    """CPI data representing low inflation period"""
     return CpiData(
         year=2024,
         month=1,

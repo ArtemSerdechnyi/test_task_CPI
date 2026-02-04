@@ -77,7 +77,9 @@ class GermanyHistoricalCpiParser:
                 continue
             year = int(year_str)
 
-            for i in range(1, 13):
+            for i in range(1, len(cells)):
+                if i >= len(headers_row):
+                    break
                 month_name = headers_row[i]
                 month_num = self.months.get(month_name.lower())
                 value = cells[i].text.strip()

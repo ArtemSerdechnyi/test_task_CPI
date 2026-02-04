@@ -4,7 +4,7 @@ Main conftest.py for shared test fixtures across all tests
 import pytest
 from decimal import Decimal
 from datetime import date
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import Mock
 
 from back.app.schemas.cpi import CpiPeriod
 from back.app.schemas.valuation import (
