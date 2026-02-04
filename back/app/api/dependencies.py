@@ -23,7 +23,7 @@ valuation_service_dep = Annotated[ValuationService, Depends(get_valuation_servic
 
 
 def get_llm_service() -> LLMService:
-    return LLMService(model=settings.LLM, api_key=settings.LLM_API_KEY)
+    return LLMService(model=settings.LLM, api_key=settings.OPENAI_API_KEY)
 
 
 llm_service_dep = Annotated[LLMService, Depends(get_llm_service)]
