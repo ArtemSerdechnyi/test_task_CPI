@@ -111,10 +111,8 @@ def override_valuation_dependency(mock_valuation_service):
 
 @pytest.fixture
 def mock_llm_service():
-    """Mock LLM service for integration tests"""
     service = Mock(spec=LLMService)
 
-    # Setup async mock for get_llm_analysis
     async def mock_analysis(*args, **kwargs):
         return """
         Based on the valuation analysis:
@@ -135,8 +133,6 @@ def mock_llm_service():
 
 @pytest.fixture
 def override_llm_dependency(mock_llm_service):
-    """Override LLM service dependency"""
-    from back.app.api.dependencies import get_llm_service
 
     def _override():
         return mock_llm_service

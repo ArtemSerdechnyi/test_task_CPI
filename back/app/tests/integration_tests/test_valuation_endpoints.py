@@ -107,7 +107,7 @@ class TestValuationCalculateEndpoint:
             "plot_area": 400.0,
             "remaining_useful_life": 50.0,
             "property_yield": 5.0,
-            "actual_purchase_price": None  # No actual price
+            "actual_purchase_price": None
         }
 
         response = client.post("/api/valuation/calculate", json=request_data)
