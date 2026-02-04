@@ -1,5 +1,4 @@
 from back.app.schemas.cpi import CpiPeriod
-from back.app.services.cpi_parser import germany_historical_cpi_parser
 
 
 class CPIService:

@@ -8,3 +8,4 @@ openai==2.16.0
 ruff==0.14.14
 httpx==0.28.1
 tenacity==8.5.0
+apscheduler==3.11.2

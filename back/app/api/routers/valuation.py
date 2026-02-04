@@ -1,23 +1,24 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from loguru import logger
+from fastapi import status
 
 from back.app.api.dependencies import (
     cpi_service_dep,
     valuation_service_dep,
     llm_service_dep,
 )
+from back.app.core.exceptions import BadRequestException, InternalServerException
 from back.app.schemas.valuation import (
     ValuationInput,
     ValuationResult,
     CPIData,
-    AIAnalysisResponse,
     AIPromptSchema,
 )
 
 valuation_router = APIRouter()
 
 
-@valuation_router.post("/calculate")
+@valuation_router.post("/calculate", status_code=status.HTTP_200_OK)
 async def calculate_valuation(
     input_data: ValuationInput,
     cpi_service: cpi_service_dep,
@@ -32,7 +33,7 @@ async def calculate_valuation(
         month = input_data.purchase_date.month
 
         index_value = cpi_service.get_cpi(year=year, month=month)
-        cpi_data = CPIData(year=year, month=month, index_value=index_value)
+        cpi_data = CPIData(year=year, month=month, index_value=float(index_value))
 
         result = valuation_service.calculate_valuation(input_data, cpi_data)
 
@@ -40,13 +41,13 @@ async def calculate_valuation(
 
     except ValueError as e:
         logger.exception(e)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise BadRequestException
     except Exception as e:
         logger.exception(e)
-        raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
+        raise InternalServerException(detail=f"Calculation error: {str(e)}")
 
 
-@valuation_router.post("/calculate/analysis")
+@valuation_router.post("/calculate/analysis", status_code=status.HTTP_200_OK)
 async def get_ai_analysis(
     result: ValuationResult,
     llm_service: llm_service_dep,
@@ -77,4 +78,4 @@ async def get_ai_analysis(
 
     except Exception as e:
         logger.exception(e)
-        raise HTTPException(status_code=500, detail=f"AI analysis error {str(e)}")
+        raise InternalServerException(detail=f"AI analysis error: {str(e)}")

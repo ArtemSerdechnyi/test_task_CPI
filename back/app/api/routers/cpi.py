@@ -1,13 +1,15 @@
 from datetime import date
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from starlette import status
 
 from back.app.api.dependencies import cpi_service_dep
+from back.app.core.exceptions import BadRequestException, InternalServerException
 
 cpi_router = APIRouter()
 
 
-@cpi_router.get("/{year}/{month}")
+@cpi_router.get("/{year}/{month}", status_code=status.HTTP_200_OK)
 def get_cpi(
     year: int,
     month: int,
@@ -18,12 +20,12 @@ def get_cpi(
     """
 
     if not (1 <= month <= 12):
-        raise HTTPException(status_code=400)
+        raise BadRequestException(detail="CPI month must be between 1 and 12")
 
     if year < 2002 or year > date.today().year:
-        raise HTTPException(status_code=400)
+        raise BadRequestException(detail="CPI year must be between 2002 and today.")
 
     try:
         return cpi_service.get_cpi(year=year, month=month)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"CPI: {str(e)}")
+        raise InternalServerException(detail=f"CPI: {str(e)}")
