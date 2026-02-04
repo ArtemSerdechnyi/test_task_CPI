@@ -17,7 +17,7 @@ __all__ = ["germany_historical_cpi_parser"]
 
 class GermanyHistoricalCpiParser:
     def __init__(self):
-        self.__cpi_data: dict[CpiPeriod, float] = {}
+        self._cpi_data: dict[CpiPeriod, float] = {}
         self.url = settings.CPI_SOURCE_URL
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -39,7 +39,7 @@ class GermanyHistoricalCpiParser:
     }
 
     def get_cpi_period_data(self, period: CpiPeriod) -> CpiPeriod | None:
-        return self.__cpi_data.get(period)
+        return self._cpi_data.get(period)
 
     @retry(
         stop=stop_after_attempt(3),
@@ -84,10 +84,10 @@ class GermanyHistoricalCpiParser:
 
                 if month_num and value:
                     key = CpiPeriod(year=year, month=month_num)
-                    self.__cpi_data[key] = float(value.replace(",", "."))
+                    self._cpi_data[key] = float(value.replace(",", "."))
 
         logger.info(
-            f"CPI parser finished, total records in mapper: {len(self.__cpi_data)}",
+            f"CPI parser finished, total records in mapper: {len(self._cpi_data)}",
         )
 
 
