@@ -1,19 +1,14 @@
-"""
-Fixtures for integration tests
-"""
 from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import Mock, AsyncMock
 from decimal import Decimal
 
 from back.main import create_app
 from back.app.schemas.valuation import ValuationInput, PropertyType
 from back.app.services.cpi_service import CpiService
 from back.app.services.valuation_service import ValuationService
-from back.app.services.llm_service import LLMService
-from back.app.schemas.cpi import CpiPeriod
 
 
 @pytest.fixture
@@ -23,18 +18,15 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Create a test client for the FastAPI app"""
     return TestClient(app)
 
 
 @pytest.fixture
 def mock_cpi_service():
-    """Mock CPI service for integration tests"""
     service = Mock(spec=CpiService)
 
-    # Setup default return values
-    service.get_cpi_october_previous_year = Mock(return_value=118.5)
-    service.get_cpi = Mock(return_value=120.5)
+    service.get_cpi_october_previous_year = AsyncMock(return_value=118.5)
+    service.get_cpi = AsyncMock(return_value=120.5)
 
     return service
 
@@ -56,18 +48,14 @@ def valuation_input():
 
 @pytest.fixture
 def mock_valuation_service(valuation_input: ValuationInput):
-    """Mock Valuation service for integration tests"""
     from back.app.schemas.valuation import (
         ValuationResult,
         ManagementCosts,
         CpiData,
-        PropertyType
     )
-    from datetime import date
 
     service = Mock(spec=ValuationService)
 
-    # Create a sample valuation result
     sample_result = ValuationResult(
         input_data=valuation_input,
         cpi_used=CpiData(
@@ -105,33 +93,7 @@ def mock_valuation_service(valuation_input: ValuationInput):
 
 
 @pytest.fixture
-def mock_llm_service():
-    """Mock LLM service for integration tests"""
-    service = Mock(spec=LLMService)
-
-    # Setup async mock for get_llm_analysis
-    async def mock_analysis(*args, **kwargs):
-        return """
-        Based on the valuation analysis:
-
-        1. The theoretical value is €412,499
-        2. The actual purchase price is €500,000
-        3. Building share: 51.52%
-        4. Land share: 48.48%
-
-        The property appears to be slightly overvalued compared to the theoretical calculation.
-        """
-
-    service.get_llm_analysis = AsyncMock(side_effect=mock_analysis)
-
-    return service
-
-
-@pytest.fixture
 def override_cpi_dependency(mock_cpi_service):
-    """Override CPI service dependency"""
-    from back.app.api.dependencies import get_cpi_service
-
     def _override():
         return mock_cpi_service
 
@@ -140,21 +102,8 @@ def override_cpi_dependency(mock_cpi_service):
 
 @pytest.fixture
 def override_valuation_dependency(mock_valuation_service):
-    """Override Valuation service dependency"""
-    from back.app.api.dependencies import get_valuation_service
-
     def _override():
         return mock_valuation_service
 
     return _override
 
-
-@pytest.fixture
-def override_llm_dependency(mock_llm_service):
-    """Override LLM service dependency"""
-    from back.app.api.dependencies import get_llm_service
-
-    def _override():
-        return mock_llm_service
-
-    return _override

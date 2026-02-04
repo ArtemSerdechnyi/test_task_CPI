@@ -1,6 +1,3 @@
-"""
-Main conftest.py for shared test fixtures across all tests
-"""
 import pytest
 from decimal import Decimal
 from datetime import date
@@ -16,13 +13,11 @@ from back.app.schemas.valuation import (
 
 @pytest.fixture
 def sample_cpi_period():
-    """Sample CPI period for testing"""
     return CpiPeriod(year=2023, month=10)
 
 
 @pytest.fixture
 def sample_cpi_data():
-    """Sample CPI data for testing"""
     return CpiData(
         year=2024,
         month=1,
@@ -33,7 +28,6 @@ def sample_cpi_data():
 
 @pytest.fixture
 def sample_residential_input():
-    """Sample residential property valuation input"""
     return ValuationInput(
         property_type=PropertyType.RESIDENTIAL,
         purchase_date=date(2024, 1, 15),
@@ -51,7 +45,6 @@ def sample_residential_input():
 
 @pytest.fixture
 def sample_commercial_input():
-    """Sample commercial property valuation input"""
     return ValuationInput(
         property_type=PropertyType.COMMERCIAL,
         purchase_date=date(2024, 1, 15),
@@ -69,7 +62,6 @@ def sample_commercial_input():
 
 @pytest.fixture
 def mock_cpi_parser():
-    """Mock CPI parser service"""
     parser = Mock()
     parser._cpi_data = {
         CpiPeriod(year=2023, month=10): 118.5,
@@ -83,7 +75,6 @@ def mock_cpi_parser():
 
 @pytest.fixture
 def mock_httpx_response():
-    """Mock httpx response for CPI parser tests"""
     mock_response = Mock()
     mock_response.content = b"""
     <html>
