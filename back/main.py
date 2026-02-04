@@ -15,7 +15,7 @@ from starlette.responses import JSONResponse
 from back.app.api.routers import main_router
 from back.app.core.config import settings
 from back.app.core.exceptions import BadRequestException, InternalServerException
-from back.app.services.cpi_parser import germany_historical_cpi_parser
+from back.app.services.cpi_parser_service import germany_historical_cpi_parser
 
 
 scheduler = AsyncIOScheduler()
@@ -28,7 +28,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     scheduler.add_job(
         germany_historical_cpi_parser.parse_into_mapper,
         trigger=CronTrigger(hour="*/6", minute=0, timezone="UTC"),
-        id="resign_expired_thumbnails",
+        id="refresh_cpi_data",
         replace_existing=True,
     )
     scheduler.start()
