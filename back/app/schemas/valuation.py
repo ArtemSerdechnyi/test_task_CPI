@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pydantic import BaseModel, Field
 from datetime import date
 from enum import StrEnum
@@ -14,54 +16,54 @@ class PropertyType(StrEnum):
 class ValuationInput(BaseModel):
     property_type: PropertyType
     purchase_date: date
-    monthly_net_rent: float = Field(..., gt=0)
-    living_area: float = Field(..., gt=0)
-    residential_units: Optional[int] = Field(None, ge=0)
-    parking_units: int = Field(0, ge=0)
-    land_value_per_sqm: float = Field(..., gt=0)
-    plot_area: float = Field(..., gt=0)
-    remaining_useful_life: float = Field(..., gt=0)
-    property_yield: float = Field(..., gt=0, le=100)
-    actual_purchase_price: Optional[float] = Field(None, gt=0)
+    monthly_net_rent: Decimal = Field(..., gt=0)
+    living_area: Decimal = Field(..., gt=0)
+    residential_units: Optional[Decimal] = Field(None, ge=0)
+    parking_units: Decimal = Field(0, ge=0)
+    land_value_per_sqm: Decimal = Field(..., gt=0)
+    plot_area: Decimal = Field(..., gt=0)
+    remaining_useful_life: Decimal = Field(..., gt=0)
+    property_yield: Decimal = Field(..., gt=0, le=100)
+    actual_purchase_price: Optional[Decimal] = Field(None, gt=0)
 
 
 class CPIData(BaseModel):
     year: int
     month: int
-    index_value: float
+    index_value: Decimal
     base_year: int = 2020
 
 
 class ManagementCosts(BaseModel):
-    administration: float
-    maintenance: float
-    risk_of_rent_loss: float
-    total: float
-    risk_percentage: float
+    administration: Decimal
+    maintenance: Decimal
+    risk_of_rent_loss: Decimal
+    total: Decimal
+    risk_percentage: Decimal
 
 
 class ValuationResult(BaseModel):
     input_data: ValuationInput
 
     cpi_used: CPIData
-    cpi_base_2001: float = CPI_BASE_OCT_2001
-    index_factor: float
+    cpi_base_2001: Decimal = CPI_BASE_OCT_2001
+    index_factor: Decimal
 
-    annual_gross_income: float
-    land_value: float
+    annual_gross_income: Decimal
+    land_value: Decimal
     management_costs: ManagementCosts
-    annual_net_income: float
-    land_interest: float
-    building_net_income: float
-    multiplier: float
+    annual_net_income: Decimal
+    land_interest: Decimal
+    building_net_income: Decimal
+    multiplier: Decimal
 
-    theoretical_building_value: float
-    theoretical_total_value: float
-    building_share_percent: float
-    land_share_percent: float
+    theoretical_building_value: Decimal
+    theoretical_total_value: Decimal
+    building_share_percent: Decimal
+    land_share_percent: Decimal
 
-    actual_building_value: Optional[float] = None
-    actual_land_value: Optional[float] = None
+    actual_building_value: Optional[Decimal] = None
+    actual_land_value: Optional[Decimal] = None
 
 
 class AIAnalysisRequest(BaseModel):
@@ -76,14 +78,14 @@ class AIAnalysisResponse(BaseModel):
 class AIPromptSchema(BaseModel):
     property_type: PropertyType
     purchase_date: str
-    actual_purchase_price: float
-    theoretical_total_value: float
-    building_share_percent: float
-    land_share_percent: float
-    admin_costs: float
-    maintenance_costs: float
-    risk_percentage: float
-    risk_amount: float
-    index_factor: float
-    cpi_value: float
-    cpi_base_2001: float
+    actual_purchase_price: Decimal
+    theoretical_total_value: Decimal
+    building_share_percent: Decimal
+    land_share_percent: Decimal
+    admin_costs: Decimal
+    maintenance_costs: Decimal
+    risk_percentage: Decimal
+    risk_amount: Decimal
+    index_factor: Decimal
+    cpi_value: Decimal
+    cpi_base_2001: Decimal
