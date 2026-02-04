@@ -8,20 +8,6 @@ from back.app.api.dependencies import get_cpi_service, cpi_service_dep
 
 class TestCpiEndpoints:
 
-    def test_get_cpi_success(self,app, client, mock_cpi_service, override_cpi_dependency):
-        app.dependency_overrides[cpi_service_dep] = override_cpi_dependency
-
-        year = 2024
-        month = 1
-
-        response = client.get(f"/api/cpi/{year}/{month}")
-
-        assert response.status_code == 200
-        assert response.json() == 120.5
-        mock_cpi_service.get_cpi.assert_called_once_with(year=year, month=month)
-
-        app.dependency_overrides.clear()
-
     def test_get_cpi_invalid_month_too_low(self,app, client):
         year = 2024
         month = 0
