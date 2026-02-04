@@ -16,6 +16,7 @@ class Settings(_BaseConfig):
     SERVER_HOST: str
     SERVER_PORT: int
     RELOAD: bool = True
+    ENV: str = "prod"
     FRONTEND_URLS: list[str]
     OPENAI_API_KEY: str
     LLM: str = "gpt-4o"

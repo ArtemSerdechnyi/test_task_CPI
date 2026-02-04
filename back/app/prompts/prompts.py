@@ -30,10 +30,10 @@ Inflation & Data Fetching:
 
 Instructions:
 1. Return only the analysis itself, without any introductions or unrelated comments.
-1. Contextualize the Logic: Explain how being a "{property_type}" property affected the management costs and risk loss deductions.
-2. Explain Inflation: Explicitly mention that maintenance and admin costs were adjusted using the CPI index factor of {index_factor:.4f}.
-3. Value Comparison: Compare the Theoretical Total Value (€{theoretical_total_value:,.2f}) with the Actual Purchase Price (€{actual_purchase_price:,.2f}). State if the property was purchased at a premium or a discount relative to its income-generating potential.
-Untitled Document
+2. Contextualize the Logic: Explain how being a "{property_type}" property affected the management costs and risk loss deductions.
+3. Explain Inflation: Explicitly mention that maintenance and admin costs were adjusted using the CPI index factor of {index_factor:.4f}.
+4. Value Comparison: Compare the Theoretical Total Value (€{theoretical_total_value:,.2f}) with the Actual Purchase Price (€{actual_purchase_price:,.2f}). State if the property was purchased at a premium or a discount relative to its income-generating potential.
+
 Tone: Professional, analytical, and concise.
 Language: English.
 """

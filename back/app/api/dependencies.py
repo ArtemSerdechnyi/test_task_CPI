@@ -3,16 +3,16 @@ from fastapi import Depends
 
 from back.app.core.config import settings
 from back.app.services.cpi_parser_service import germany_historical_cpi_parser
-from back.app.services.cpi_service import CPIService
+from back.app.services.cpi_service import CpiService
 from back.app.services.llm_service import LLMService
 from back.app.services.valuation_service import ValuationService
 
 
-def get_cpi_service() -> CPIService:
-    return CPIService(cpi_parser_service=germany_historical_cpi_parser)
+def get_cpi_service() -> CpiService:
+    return CpiService(cpi_parser_service=germany_historical_cpi_parser)
 
 
-cpi_service_dep = Annotated[CPIService, Depends(get_cpi_service)]
+cpi_service_dep = Annotated[CpiService, Depends(get_cpi_service)]
 
 
 def get_valuation_service() -> ValuationService:

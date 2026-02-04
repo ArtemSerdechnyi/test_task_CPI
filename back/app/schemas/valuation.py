@@ -27,7 +27,7 @@ class ValuationInput(BaseModel):
     actual_purchase_price: Optional[Decimal] = Field(None, gt=0)
 
 
-class CPIData(BaseModel):
+class CpiData(BaseModel):
     year: int
     month: int
     index_value: Decimal
@@ -45,7 +45,7 @@ class ManagementCosts(BaseModel):
 class ValuationResult(BaseModel):
     input_data: ValuationInput
 
-    cpi_used: CPIData
+    cpi_used: CpiData
     cpi_base_2001: Decimal = CPI_BASE_OCT_2001
     index_factor: Decimal
 

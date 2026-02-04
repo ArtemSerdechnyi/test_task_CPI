@@ -10,13 +10,14 @@ from tenacity import (
 from back.app.core.config import settings
 from back.app.schemas.cpi import CpiPeriod
 
+from loguru import logger
+
 __all__ = ["germany_historical_cpi_parser"]
 
 
 class GermanyHistoricalCpiParser:
-
     def __init__(self):
-        self.__cpi_data: dict[CpiPeriod, str] = {}
+        self.__cpi_data: dict[CpiPeriod, float] = {}
         self.url = settings.CPI_SOURCE_URL
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -52,14 +53,15 @@ class GermanyHistoricalCpiParser:
             response.raise_for_status()
             return response.content
 
-    async def _parse_into_mapper(self) -> dict[str, str]:
+    async def parse_into_mapper(self) -> None:
         html = await self._fetch_page()
 
         soup = BeautifulSoup(html, "html.parser")
 
         table = soup.find("table")
         if not table:
-            return {"detail": "Data not found."}
+            logger.warning("CPI table not found, CPI data not updated")
+            return
 
         headers_row = [
             th.text.strip().lower() for th in table.find("thead").find_all("th")
@@ -82,9 +84,11 @@ class GermanyHistoricalCpiParser:
 
                 if month_num and value:
                     key = CpiPeriod(year=year, month=month_num)
-                    self.__cpi_data[key] = value
+                    self.__cpi_data[key] = float(value.replace(",", "."))
 
-        return {"detail": "Data parsed into mapper successfully."}
+        logger.info(
+            f"CPI parser finished, total records in mapper: {len(self.__cpi_data)}",
+        )
 
 
 germany_historical_cpi_parser = GermanyHistoricalCpiParser()

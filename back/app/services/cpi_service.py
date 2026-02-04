@@ -2,7 +2,7 @@ from back.app.schemas.cpi import CpiPeriod
 from back.app.services.cpi_parser_service import GermanyHistoricalCpiParser
 
 
-class CPIService:
+class CpiService:
     def __init__(self, cpi_parser_service: GermanyHistoricalCpiParser):
         self._cpi_parser_service = cpi_parser_service
 

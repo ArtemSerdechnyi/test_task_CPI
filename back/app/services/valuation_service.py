@@ -4,7 +4,7 @@ from decimal import Decimal, getcontext, ROUND_HALF_UP
 from back.app.core.constants import CPI_BASE_OCT_2001
 from back.app.schemas.valuation import (
     ValuationInput,
-    CPIData,
+    CpiData,
     ValuationResult,
     ManagementCosts,
     PropertyType,
@@ -31,7 +31,7 @@ class ValuationService:
     EURO = Decimal("1")
 
     def calculate_valuation(
-        self, input_data: ValuationInput, cpi_data: CPIData
+        self, input_data: ValuationInput, cpi_data: CpiData
     ) -> ValuationResult:
 
         land_value = self._calculate_land_value(
