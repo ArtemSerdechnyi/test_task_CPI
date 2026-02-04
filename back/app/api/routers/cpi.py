@@ -14,7 +14,7 @@ def get_cpi(
     year: int,
     month: int,
     cpi_service: cpi_service_dep,
-) -> str | None:
+) -> float | None:
     """
     Get the consumer price index (CPI) for a specific month
     """
