@@ -45,9 +45,7 @@ def _include_router(app: FastAPI) -> None:
 def _add_middleware(app: FastAPI) -> None:
     if not settings.FRONTEND_URLS:
         if settings.ENV == "prod":
-            raise RuntimeError(
-                "FRONTEND_URLS must be configured in production"
-            )
+            raise RuntimeError("FRONTEND_URLS must be configured in production")
 
         logger.warning(
             "FRONTEND_URLS is not set, using dev fallback http://localhost:3000"
@@ -55,9 +53,7 @@ def _add_middleware(app: FastAPI) -> None:
         allow_origins = ["http://localhost:3000"]
     else:
         if "*" in settings.FRONTEND_URLS:
-            raise RuntimeError(
-                "Wildcard CORS origins are not allowed"
-            )
+            raise RuntimeError("Wildcard CORS origins are not allowed")
         allow_origins = settings.FRONTEND_URLS
 
     app.add_middleware(

@@ -4,20 +4,19 @@ from unittest.mock import Mock
 from back.app.api.dependencies import (
     get_cpi_service,
     get_valuation_service,
-    get_llm_service
+    get_llm_service,
 )
 
 
 class TestValuationCalculateEndpoint:
-
     def test_calculate_valuation_residential_success(
-            self,
-            app,
-            client,
-            mock_cpi_service,
-            mock_valuation_service,
-            override_cpi_dependency,
-            override_valuation_dependency
+        self,
+        app,
+        client,
+        mock_cpi_service,
+        mock_valuation_service,
+        override_cpi_dependency,
+        override_valuation_dependency,
     ):
         app.dependency_overrides[get_cpi_service] = override_cpi_dependency
         app.dependency_overrides[get_valuation_service] = override_valuation_dependency
@@ -33,7 +32,7 @@ class TestValuationCalculateEndpoint:
             "plot_area": 400.0,
             "remaining_useful_life": 50.0,
             "property_yield": 5.0,
-            "actual_purchase_price": 500000.00
+            "actual_purchase_price": 500000.00,
         }
 
         response = client.post("/api/valuation/calculate", json=request_data)
@@ -46,19 +45,21 @@ class TestValuationCalculateEndpoint:
         assert "land_share_percent" in data
         assert "management_costs" in data
 
-        mock_cpi_service.get_cpi_october_previous_year.assert_called_once_with(year=2024)
+        mock_cpi_service.get_cpi_october_previous_year.assert_called_once_with(
+            year=2024
+        )
         mock_valuation_service.calculate_valuation.assert_called_once()
 
         app.dependency_overrides.clear()
 
     def test_calculate_valuation_commercial_success(
-            self,
-            app,
-            client,
-            mock_cpi_service,
-            mock_valuation_service,
-            override_cpi_dependency,
-            override_valuation_dependency
+        self,
+        app,
+        client,
+        mock_cpi_service,
+        mock_valuation_service,
+        override_cpi_dependency,
+        override_valuation_dependency,
     ):
         app.dependency_overrides[get_cpi_service] = override_cpi_dependency
         app.dependency_overrides[get_valuation_service] = override_valuation_dependency
@@ -74,7 +75,7 @@ class TestValuationCalculateEndpoint:
             "plot_area": 500.0,
             "remaining_useful_life": 40.0,
             "property_yield": 6.0,
-            "actual_purchase_price": 1000000.00
+            "actual_purchase_price": 1000000.00,
         }
 
         response = client.post("/api/valuation/calculate", json=request_data)
@@ -85,13 +86,13 @@ class TestValuationCalculateEndpoint:
         app.dependency_overrides.clear()
 
     def test_calculate_valuation_without_actual_price(
-            self,
-            app,
-            client,
-            mock_cpi_service,
-            mock_valuation_service,
-            override_cpi_dependency,
-            override_valuation_dependency
+        self,
+        app,
+        client,
+        mock_cpi_service,
+        mock_valuation_service,
+        override_cpi_dependency,
+        override_valuation_dependency,
     ):
         app.dependency_overrides[get_cpi_service] = override_cpi_dependency
         app.dependency_overrides[get_valuation_service] = override_valuation_dependency
@@ -107,7 +108,7 @@ class TestValuationCalculateEndpoint:
             "plot_area": 400.0,
             "remaining_useful_life": 50.0,
             "property_yield": 5.0,
-            "actual_purchase_price": None
+            "actual_purchase_price": None,
         }
 
         response = client.post("/api/valuation/calculate", json=request_data)
@@ -115,7 +116,6 @@ class TestValuationCalculateEndpoint:
         assert response.status_code == 200
 
         app.dependency_overrides.clear()
-
 
     def test_calculate_valuation_invalid_property_type(self, client):
         request_data = {
@@ -172,11 +172,7 @@ class TestValuationCalculateEndpoint:
         assert response.status_code == 422
 
     def test_calculate_valuation_service_exception(
-            self,
-            app,
-            client,
-            override_cpi_dependency,
-            override_valuation_dependency
+        self, app, client, override_cpi_dependency, override_valuation_dependency
     ):
         mock_val_service = Mock()
         mock_val_service.calculate_valuation = Mock(
@@ -211,15 +207,14 @@ class TestValuationCalculateEndpoint:
 
 
 class TestValuationAnalysisEndpoint:
-
     def test_ai_analysis_success(
-            self,
-            app,
-            client,
-            mock_llm_service,
-            override_llm_dependency,
-            sample_residential_input,
-            sample_cpi_data
+        self,
+        app,
+        client,
+        mock_llm_service,
+        override_llm_dependency,
+        sample_residential_input,
+        sample_cpi_data,
     ):
         app.dependency_overrides[get_llm_service] = override_llm_dependency
 
@@ -235,13 +230,13 @@ class TestValuationAnalysisEndpoint:
                 "plot_area": 400.0,
                 "remaining_useful_life": 50.0,
                 "property_yield": 5.0,
-                "actual_purchase_price": 500000.00
+                "actual_purchase_price": 500000.00,
             },
             "cpi_used": {
                 "year": 2024,
                 "month": 1,
                 "index_value": 120.5,
-                "base_year": 2020
+                "base_year": 2020,
             },
             "cpi_base_2001": 88.9,
             "index_factor": 1.355,
@@ -252,7 +247,7 @@ class TestValuationAnalysisEndpoint:
                 "maintenance": 1500,
                 "risk_of_rent_loss": 360,
                 "total": 2360,
-                "risk_percentage": 1.50
+                "risk_percentage": 1.50,
             },
             "annual_net_income": 21640,
             "land_interest": 10000,
@@ -263,10 +258,12 @@ class TestValuationAnalysisEndpoint:
             "building_share_percent": 51.52,
             "land_share_percent": 48.48,
             "actual_building_value": 257600,
-            "actual_land_value": 242400
+            "actual_land_value": 242400,
         }
 
-        response = client.post("/api/valuation/calculate/analysis", json=valuation_result)
+        response = client.post(
+            "/api/valuation/calculate/analysis", json=valuation_result
+        )
 
         assert response.status_code == 200
         analysis = response.json()
@@ -276,12 +273,7 @@ class TestValuationAnalysisEndpoint:
 
         app.dependency_overrides.clear()
 
-    def test_ai_analysis_llm_exception(
-            self,
-            app,
-            client,
-            override_llm_dependency
-    ):
+    def test_ai_analysis_llm_exception(self, app, client, override_llm_dependency):
         from unittest.mock import AsyncMock
 
         mock_service = Mock()
@@ -306,13 +298,13 @@ class TestValuationAnalysisEndpoint:
                 "plot_area": 400.0,
                 "remaining_useful_life": 50.0,
                 "property_yield": 5.0,
-                "actual_purchase_price": 500000.00
+                "actual_purchase_price": 500000.00,
             },
             "cpi_used": {
                 "year": 2024,
                 "month": 1,
                 "index_value": 120.5,
-                "base_year": 2020
+                "base_year": 2020,
             },
             "cpi_base_2001": 88.9,
             "index_factor": 1.355,
@@ -323,7 +315,7 @@ class TestValuationAnalysisEndpoint:
                 "maintenance": 1500,
                 "risk_of_rent_loss": 360,
                 "total": 2360,
-                "risk_percentage": 1.50
+                "risk_percentage": 1.50,
             },
             "annual_net_income": 21640,
             "land_interest": 10000,
@@ -334,10 +326,12 @@ class TestValuationAnalysisEndpoint:
             "building_share_percent": 51.52,
             "land_share_percent": 48.48,
             "actual_building_value": 257600,
-            "actual_land_value": 242400
+            "actual_land_value": 242400,
         }
 
-        response = client.post("/api/valuation/calculate/analysis", json=valuation_result)
+        response = client.post(
+            "/api/valuation/calculate/analysis", json=valuation_result
+        )
 
         assert response.status_code == 500
         assert "AI analysis error" in response.json()["detail"]
@@ -345,9 +339,7 @@ class TestValuationAnalysisEndpoint:
         app.dependency_overrides.clear()
 
     def test_ai_analysis_invalid_input(self, client):
-        invalid_result = {
-            "invalid_field": "invalid_value"
-        }
+        invalid_result = {"invalid_field": "invalid_value"}
 
         response = client.post("/api/valuation/calculate/analysis", json=invalid_result)
 

@@ -7,8 +7,7 @@ from back.app.api.dependencies import get_cpi_service, cpi_service_dep
 
 
 class TestCpiEndpoints:
-
-    def test_get_cpi_invalid_month_too_low(self,app, client):
+    def test_get_cpi_invalid_month_too_low(self, app, client):
         year = 2024
         month = 0
 
@@ -44,7 +43,7 @@ class TestCpiEndpoints:
         assert response.status_code == 400
         assert "year must be between 2002 and today" in response.json()["detail"]
 
-    def test_get_cpi_not_found(self,app, client, override_cpi_dependency):
+    def test_get_cpi_not_found(self, app, client, override_cpi_dependency):
         mock_service = Mock()
         mock_service.get_cpi = Mock(return_value=None)
 
@@ -63,7 +62,9 @@ class TestCpiEndpoints:
 
         app.dependency_overrides.clear()
 
-    def test_get_cpi_valid_boundary_values(self,app, client, mock_cpi_service, override_cpi_dependency):
+    def test_get_cpi_valid_boundary_values(
+        self, app, client, mock_cpi_service, override_cpi_dependency
+    ):
         app.dependency_overrides[cpi_service_dep] = override_cpi_dependency
 
         test_cases = [
@@ -79,7 +80,7 @@ class TestCpiEndpoints:
 
         app.dependency_overrides.clear()
 
-    def test_get_cpi_service_exception(self,app, client, override_cpi_dependency):
+    def test_get_cpi_service_exception(self, app, client, override_cpi_dependency):
         mock_service = Mock()
         mock_service.get_cpi = Mock(side_effect=Exception("Database error"))
 

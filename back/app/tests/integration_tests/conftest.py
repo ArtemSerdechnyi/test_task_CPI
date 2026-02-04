@@ -17,6 +17,7 @@ def app():
     app = create_app()
     return app
 
+
 @pytest.fixture
 def client(app):
     return TestClient(app)
@@ -30,6 +31,7 @@ def mock_cpi_service():
     service.get_cpi = Mock(return_value=120.5)
 
     return service
+
 
 @pytest.fixture
 def valuation_input():
@@ -47,6 +49,7 @@ def valuation_input():
         actual_purchase_price=Decimal("450000"),
     )
 
+
 @pytest.fixture
 def mock_valuation_service(valuation_input: ValuationInput):
     from back.app.schemas.valuation import (
@@ -60,10 +63,7 @@ def mock_valuation_service(valuation_input: ValuationInput):
     sample_result = ValuationResult(
         input_data=valuation_input,
         cpi_used=CpiData(
-            year=2024,
-            month=1,
-            index_value=Decimal("120.5"),
-            base_year=2020
+            year=2024, month=1, index_value=Decimal("120.5"), base_year=2020
         ),
         cpi_base_2001=Decimal("88.9"),
         index_factor=Decimal("1.355"),
@@ -74,7 +74,7 @@ def mock_valuation_service(valuation_input: ValuationInput):
             maintenance=Decimal("1500"),
             risk_of_rent_loss=Decimal("360"),
             total=Decimal("2360"),
-            risk_percentage=Decimal("1.50")
+            risk_percentage=Decimal("1.50"),
         ),
         annual_net_income=Decimal("21640"),
         land_interest=Decimal("10000"),
@@ -130,10 +130,8 @@ def mock_llm_service():
     return service
 
 
-
 @pytest.fixture
 def override_llm_dependency(mock_llm_service):
-
     def _override():
         return mock_llm_service
 

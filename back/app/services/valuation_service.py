@@ -33,7 +33,6 @@ class ValuationService:
     def calculate_valuation(
         self, input_data: ValuationInput, cpi_data: CpiData
     ) -> ValuationResult:
-
         land_value = self._calculate_land_value(
             Decimal(str(input_data.land_value_per_sqm)),
             Decimal(str(input_data.plot_area)),
@@ -43,9 +42,7 @@ class ValuationService:
             Decimal(str(input_data.monthly_net_rent))
         )
 
-        index_factor = self._calculate_index_factor(
-            Decimal(str(cpi_data.index_value))
-        )
+        index_factor = self._calculate_index_factor(Decimal(str(cpi_data.index_value)))
 
         management_costs = self._calculate_management_costs(
             input_data, index_factor, annual_gross_income
@@ -71,9 +68,7 @@ class ValuationService:
             theoretical_building_value / theoretical_total_value * Decimal("100")
         )
 
-        land_share_percent = (
-            land_value / theoretical_total_value * Decimal("100")
-        )
+        land_share_percent = land_value / theoretical_total_value * Decimal("100")
 
         actual_building_value = None
         actual_land_value = None
@@ -135,7 +130,6 @@ class ValuationService:
         index_factor: Decimal,
         annual_gross_income: Decimal,
     ) -> ManagementCosts:
-
         units = Decimal(str(input_data.residential_units or 0))
 
         if units > 0:
@@ -148,9 +142,9 @@ class ValuationService:
         else:
             administration = Decimal("0")
 
-        maintenance_per_sqm = (
-            self.RES_MAINTENANCE_BASE_RATE * index_factor
-        ).quantize(self.MAINTENANCE_RATE_DECIMALS, ROUND_HALF_UP)
+        maintenance_per_sqm = (self.RES_MAINTENANCE_BASE_RATE * index_factor).quantize(
+            self.MAINTENANCE_RATE_DECIMALS, ROUND_HALF_UP
+        )
 
         maintenance = maintenance_per_sqm * Decimal(str(input_data.living_area))
 
@@ -163,9 +157,9 @@ class ValuationService:
             maintenance=self._round_euro(maintenance),
             risk_of_rent_loss=self._round_euro(risk_of_rent_loss),
             total=self._round_euro(total),
-            risk_percentage=(risk_of_rent_loss / annual_gross_income * Decimal("100")).quantize(
-                Decimal("0.01")
-            ),
+            risk_percentage=(
+                risk_of_rent_loss / annual_gross_income * Decimal("100")
+            ).quantize(Decimal("0.01")),
         )
 
     def _calculate_commercial_costs(
@@ -174,12 +168,11 @@ class ValuationService:
         index_factor: Decimal,
         annual_gross_income: Decimal,
     ) -> ManagementCosts:
-
         administration = annual_gross_income * self.COM_ADMIN_PERCENT
 
-        maintenance_per_sqm = (
-            self.COM_MAINTENANCE_BASE_RATE * index_factor
-        ).quantize(self.MAINTENANCE_RATE_DECIMALS, ROUND_HALF_UP)
+        maintenance_per_sqm = (self.COM_MAINTENANCE_BASE_RATE * index_factor).quantize(
+            self.MAINTENANCE_RATE_DECIMALS, ROUND_HALF_UP
+        )
 
         maintenance = maintenance_per_sqm * Decimal(str(input_data.living_area))
 
@@ -192,9 +185,9 @@ class ValuationService:
             maintenance=self._round_euro(maintenance),
             risk_of_rent_loss=self._round_euro(risk_of_rent_loss),
             total=self._round_euro(total),
-            risk_percentage=(risk_of_rent_loss / annual_gross_income * Decimal("100")).quantize(
-                Decimal("0.01")
-            ),
+            risk_percentage=(
+                risk_of_rent_loss / annual_gross_income * Decimal("100")
+            ).quantize(Decimal("0.01")),
         )
 
     def _calculate_multiplier(

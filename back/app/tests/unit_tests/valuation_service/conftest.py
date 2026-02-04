@@ -12,19 +12,9 @@ def valuation_service():
 
 @pytest.fixture
 def cpi_data_high_inflation():
-    return CpiData(
-        year=2024,
-        month=1,
-        index_value=Decimal("130.0"),
-        base_year=2020
-    )
+    return CpiData(year=2024, month=1, index_value=Decimal("130.0"), base_year=2020)
 
 
 @pytest.fixture
 def cpi_data_low_inflation():
-    return CpiData(
-        year=2024,
-        month=1,
-        index_value=Decimal("105.0"),
-        base_year=2020
-    )
+    return CpiData(year=2024, month=1, index_value=Decimal("105.0"), base_year=2020)

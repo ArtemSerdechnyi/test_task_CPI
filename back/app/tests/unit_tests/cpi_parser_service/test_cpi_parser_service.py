@@ -13,10 +13,9 @@ class TestGermanyHistoricalCpiParser:
 
     @pytest.mark.asyncio
     async def test_parse_into_mapper_success(self, parser, mock_httpx_response):
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = mock_httpx_response.content
 
-            
             await parser.parse_into_mapper()
 
             assert len(parser._cpi_data) > 0
@@ -33,17 +32,16 @@ class TestGermanyHistoricalCpiParser:
     async def test_parse_into_mapper_no_table(self, parser):
         html_without_table = b"<html><body><p>No table here</p></body></html>"
 
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = html_without_table
 
-            
             await parser.parse_into_mapper()
 
             assert len(parser._cpi_data) == 0
 
     @pytest.mark.asyncio
     async def test_parse_handles_empty_cells(self, parser):
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = b"""
             <html>
                 <table>
@@ -63,7 +61,6 @@ class TestGermanyHistoricalCpiParser:
             </html>
             """
 
-            
             await parser.parse_into_mapper()
 
             jan_2024 = CpiPeriod(year=2024, month="01")
@@ -88,10 +85,9 @@ class TestGermanyHistoricalCpiParser:
         </html>
         """
 
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = html_with_invalid
 
-            
             await parser.parse_into_mapper()
 
             jan_2024 = CpiPeriod(year=2024, month="01")
@@ -104,7 +100,7 @@ class TestGermanyHistoricalCpiParser:
         mock_response.content = b"<html>test</html>"
         mock_response.raise_for_status = Mock()
 
-        with patch('httpx.AsyncClient') as mock_client:
+        with patch("httpx.AsyncClient") as mock_client:
             mock_client.return_value.__aenter__.return_value.get = AsyncMock(
                 return_value=mock_response
             )
@@ -120,23 +116,22 @@ class TestGermanyHistoricalCpiParser:
         mock_response.content = b"<html>test</html>"
         mock_response.raise_for_status = Mock()
 
-        with patch('httpx.AsyncClient') as mock_client:
+        with patch("httpx.AsyncClient") as mock_client:
             mock_client.return_value.__aenter__.return_value.get = AsyncMock(
                 side_effect=[
                     httpx.RequestError("Connection failed"),
                     httpx.RequestError("Connection failed"),
-                    mock_response
+                    mock_response,
                 ]
             )
 
-            
             result = await parser._fetch_page()
 
             assert result == b"<html>test</html>"
 
     @pytest.mark.asyncio
     async def test_fetch_page_retry_exhausted(self, parser):
-        with patch('httpx.AsyncClient') as mock_client:
+        with patch("httpx.AsyncClient") as mock_client:
             mock_client.return_value.__aenter__.return_value.get = AsyncMock(
                 side_effect=httpx.RequestError("Connection failed")
             )
@@ -146,13 +141,11 @@ class TestGermanyHistoricalCpiParser:
 
     @pytest.mark.asyncio
     async def test_fetch_page_http_status_error(self, parser):
-        with patch('httpx.AsyncClient') as mock_client:
+        with patch("httpx.AsyncClient") as mock_client:
             mock_response = Mock()
             mock_response.raise_for_status = Mock(
                 side_effect=httpx.HTTPStatusError(
-                    "404 Not Found",
-                    request=Mock(),
-                    response=Mock()
+                    "404 Not Found", request=Mock(), response=Mock()
                 )
             )
             mock_client.return_value.__aenter__.return_value.get = AsyncMock(
@@ -166,7 +159,6 @@ class TestGermanyHistoricalCpiParser:
         period = CpiPeriod(year=2023, month=10)
         parser._cpi_data[period] = 118.5
 
-        
         result = parser.get_cpi_period_data(period)
 
         assert result == 118.5
@@ -174,7 +166,6 @@ class TestGermanyHistoricalCpiParser:
     def test_get_cpi_period_data_not_exists(self, parser):
         period = CpiPeriod(year=2099, month=12)
 
-        
         result = parser.get_cpi_period_data(period)
 
         assert result is None
@@ -194,10 +185,9 @@ class TestGermanyHistoricalCpiParser:
         </html>
         """
 
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = html_with_comma
 
-            
             await parser.parse_into_mapper()
 
             jan_2024 = CpiPeriod(year=2024, month="01")
@@ -219,10 +209,9 @@ class TestGermanyHistoricalCpiParser:
 
     @pytest.mark.asyncio
     async def test_parse_multiple_years(self, parser, mock_httpx_response):
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = mock_httpx_response.content
 
-            
             await parser.parse_into_mapper()
 
             has_2023_data = any(p.year == 2023 for p in parser._cpi_data.keys())
@@ -249,10 +238,9 @@ class TestGermanyHistoricalCpiParser:
         </html>
         """
 
-        with patch.object(parser, '_fetch_page', new_callable=AsyncMock) as mock_fetch:
+        with patch.object(parser, "_fetch_page", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = html
 
-            
             await parser.parse_into_mapper()
 
             assert parser._cpi_data[old_period] == 115.0

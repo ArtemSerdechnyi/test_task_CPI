@@ -23,7 +23,6 @@ class TestCpiService:
         year = 2024
         month = 1
 
-        
         result = cpi_service.get_cpi(year, month)
 
         assert result == 120.5

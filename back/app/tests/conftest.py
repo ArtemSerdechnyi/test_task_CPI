@@ -18,12 +18,7 @@ def sample_cpi_period():
 
 @pytest.fixture
 def sample_cpi_data():
-    return CpiData(
-        year=2024,
-        month=1,
-        index_value=Decimal("120.5"),
-        base_year=2020
-    )
+    return CpiData(year=2024, month=1, index_value=Decimal("120.5"), base_year=2020)
 
 
 @pytest.fixture
@@ -39,7 +34,7 @@ def sample_residential_input():
         plot_area=Decimal("400.0"),
         remaining_useful_life=Decimal("50.0"),
         property_yield=Decimal("5.0"),
-        actual_purchase_price=Decimal("500000.00")
+        actual_purchase_price=Decimal("500000.00"),
     )
 
 
@@ -56,7 +51,7 @@ def sample_commercial_input():
         plot_area=Decimal("500.0"),
         remaining_useful_life=Decimal("40.0"),
         property_yield=Decimal("6.0"),
-        actual_purchase_price=Decimal("1000000.00")
+        actual_purchase_price=Decimal("1000000.00"),
     )
 
 
@@ -69,7 +64,9 @@ def mock_cpi_parser():
         CpiPeriod(year=2024, month=1): 120.5,
         CpiPeriod(year=2024, month=6): 122.0,
     }
-    parser.get_cpi_period_data = Mock(side_effect=lambda period: parser._cpi_data.get(period))
+    parser.get_cpi_period_data = Mock(
+        side_effect=lambda period: parser._cpi_data.get(period)
+    )
     return parser
 
 
