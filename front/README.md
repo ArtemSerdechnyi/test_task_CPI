@@ -29,6 +29,29 @@ This frontend provides the user interface for the **KPA Tool – Income Capitali
   - After calculation, the user can request an AI-generated explanation
   - The analysis explains property type impact, CPI-based inflation adjustment, and value comparison
 
+  ### How to run
+
+Prerequisites:
+
+- Node.js and npm installed
+
+Steps:
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd front
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Navigate to the frontend directory:
+   ```bash
+   npm start
+   ```
+4. Open the app in your browser:
+   http://localhost:4200
+
 ### User Flow
 
 1. Enter valuation data and select property type

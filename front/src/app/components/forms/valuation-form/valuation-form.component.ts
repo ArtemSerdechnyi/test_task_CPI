@@ -72,11 +72,14 @@ export class ValuationFormComponent {
         if (type === 'residential') {
           ctrl.enable({ emitEvent: false });
           ctrl.setValidators([Validators.required, Validators.min(1)]);
+          if (ctrl.value < 1) {
+            ctrl.setValue(1, { emitEvent: false });
+          }
         } else {
+          ctrl.setValue(1, { emitEvent: false });
           ctrl.disable({ emitEvent: false });
           ctrl.clearValidators();
         }
-
         ctrl.updateValueAndValidity({ emitEvent: false });
       });
   }
