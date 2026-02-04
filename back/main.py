@@ -20,12 +20,11 @@ from back.app.services.cpi_parser import germany_historical_cpi_parser
 
 scheduler = AsyncIOScheduler()
 
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     logger.info("Starting app...")
-    asyncio.create_task(
-        germany_historical_cpi_parser.parse_into_mapper()
-    )
+    asyncio.create_task(germany_historical_cpi_parser.parse_into_mapper())
     scheduler.add_job(
         germany_historical_cpi_parser.parse_into_mapper,
         trigger=CronTrigger(hour="*/6", minute=0, timezone="UTC"),
@@ -52,11 +51,12 @@ def _add_middleware(app: FastAPI) -> None:
         allow_headers=["*"],
     )
 
+
 def _register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(BadRequestException)
     async def bad_request_exception_handler(
-            _: Request,
-            exc: BadRequestException,
+        _: Request,
+        exc: BadRequestException,
     ):
         return JSONResponse(
             status_code=exc.status_code,
@@ -65,13 +65,14 @@ def _register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(InternalServerException)
     async def internal_server_exception_handler(
-            _: Request,
-            exc: InternalServerException,
+        _: Request,
+        exc: InternalServerException,
     ):
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail},
         )
+
 
 def create_app() -> FastAPI:
     app = FastAPI(
