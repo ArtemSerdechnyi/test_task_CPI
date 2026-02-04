@@ -45,7 +45,7 @@ Steps:
    ```bash
    npm install
    ```
-3. Navigate to the frontend directory:
+3. Start the development server:
    ```bash
    npm start
    ```
