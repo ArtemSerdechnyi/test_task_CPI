@@ -14,9 +14,9 @@ __all__ = ["germany_historical_cpi_parser"]
 
 
 class GermanyHistoricalCpiParser:
-    cpi_data: dict[CpiPeriod, str] = {}
 
     def __init__(self):
+        self.__cpi_data: dict[CpiPeriod, str] = {}
         self.url = settings.CPI_SOURCE_URL
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -37,6 +37,9 @@ class GermanyHistoricalCpiParser:
         "dec": "12",
     }
 
+    def get_cpi_period_data(self, period: CpiPeriod) -> CpiPeriod | None:
+        return self.__cpi_data.get(period)
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
@@ -49,7 +52,7 @@ class GermanyHistoricalCpiParser:
             response.raise_for_status()
             return response.content
 
-    async def parse_into_mapper(self) -> dict[str, str]:
+    async def _parse_into_mapper(self) -> dict[str, str]:
         html = await self._fetch_page()
 
         soup = BeautifulSoup(html, "html.parser")
@@ -79,7 +82,7 @@ class GermanyHistoricalCpiParser:
 
                 if month_num and value:
                     key = CpiPeriod(year=year, month=month_num)
-                    self.cpi_data[key] = value
+                    self.__cpi_data[key] = value
 
         return {"detail": "Data parsed into mapper successfully."}
 

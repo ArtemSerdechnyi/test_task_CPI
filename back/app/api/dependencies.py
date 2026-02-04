@@ -9,7 +9,7 @@ from back.app.services.valuation_service import ValuationService
 
 
 def get_cpi_service() -> CPIService:
-    return CPIService(germany_historical_cpi_parser.cpi_data)
+    return CPIService(cpi_parser_service=germany_historical_cpi_parser)
 
 
 cpi_service_dep = Annotated[CPIService, Depends(get_cpi_service)]

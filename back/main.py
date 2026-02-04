@@ -24,9 +24,9 @@ scheduler = AsyncIOScheduler()
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     logger.info("Starting app...")
-    asyncio.create_task(germany_historical_cpi_parser.parse_into_mapper())
+    asyncio.create_task(germany_historical_cpi_parser._parse_into_mapper())
     scheduler.add_job(
-        germany_historical_cpi_parser.parse_into_mapper,
+        germany_historical_cpi_parser._parse_into_mapper,
         trigger=CronTrigger(hour="*/6", minute=0, timezone="UTC"),
         id="refresh_cpi_data",
         replace_existing=True,
