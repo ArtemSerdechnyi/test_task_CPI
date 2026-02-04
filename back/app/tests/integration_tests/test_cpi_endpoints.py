@@ -6,17 +6,15 @@ from datetime import date
 from unittest.mock import Mock
 
 
-from back.app.api.dependencies import get_cpi_service
+from back.app.api.dependencies import get_cpi_service, cpi_service_dep
 
 
 class TestCpiEndpoints:
     """Integration tests for CPI API endpoints"""
 
-    def test_get_cpi_success(self, client, mock_cpi_service, override_cpi_dependency):
+    def test_get_cpi_success(self,app, client, mock_cpi_service, override_cpi_dependency):
         """Test successful CPI retrieval"""
-        # Given
-        from back import app
-        app.dependency_overrides[get_cpi_service] = override_cpi_dependency
+        app.dependency_overrides[cpi_service_dep] = override_cpi_dependency
 
         year = 2024
         month = 1
@@ -32,7 +30,7 @@ class TestCpiEndpoints:
         # Cleanup
         app.dependency_overrides.clear()
 
-    def test_get_cpi_invalid_month_too_low(self, client):
+    def test_get_cpi_invalid_month_too_low(self,app, client):
         """Test CPI endpoint with invalid month (too low)"""
         # Given
         year = 2024
@@ -84,11 +82,8 @@ class TestCpiEndpoints:
         assert response.status_code == 400
         assert "year must be between 2002 and today" in response.json()["detail"]
 
-    def test_get_cpi_not_found(self, client, override_cpi_dependency):
+    def test_get_cpi_not_found(self,app, client, override_cpi_dependency):
         """Test CPI endpoint when data not found"""
-        # Given
-        from back import app
-
         mock_service = Mock()
         mock_service.get_cpi = Mock(return_value=None)
 
@@ -110,10 +105,8 @@ class TestCpiEndpoints:
         # Cleanup
         app.dependency_overrides.clear()
 
-    def test_get_cpi_valid_boundary_values(self, client, mock_cpi_service, override_cpi_dependency):
+    def test_get_cpi_valid_boundary_values(self,app, client, mock_cpi_service, override_cpi_dependency):
         """Test CPI endpoint with boundary valid values"""
-        # Given
-        from back import app
         app.dependency_overrides[get_cpi_service] = override_cpi_dependency
 
         test_cases = [
@@ -133,10 +126,8 @@ class TestCpiEndpoints:
         # Cleanup
         app.dependency_overrides.clear()
 
-    def test_get_cpi_service_exception(self, client, override_cpi_dependency):
+    def test_get_cpi_service_exception(self,app, client, override_cpi_dependency):
         """Test CPI endpoint when service raises exception"""
-        # Given
-        from back import app
 
         mock_service = Mock()
         mock_service.get_cpi = Mock(side_effect=Exception("Database error"))

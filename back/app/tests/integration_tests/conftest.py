@@ -1,12 +1,15 @@
 """
 Fixtures for integration tests
 """
+from datetime import date
+
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import Mock, AsyncMock, patch
 from decimal import Decimal
 
-from back import app
+from back.main import create_app
+from back.app.schemas.valuation import ValuationInput, PropertyType
 from back.app.services.cpi_service import CpiService
 from back.app.services.valuation_service import ValuationService
 from back.app.services.llm_service import LLMService
@@ -14,7 +17,12 @@ from back.app.schemas.cpi import CpiPeriod
 
 
 @pytest.fixture
-def client():
+def app():
+    app = create_app()
+    return app
+
+@pytest.fixture
+def client(app):
     """Create a test client for the FastAPI app"""
     return TestClient(app)
 
@@ -30,9 +38,24 @@ def mock_cpi_service():
 
     return service
 
+@pytest.fixture
+def valuation_input():
+    return ValuationInput(
+        property_type=PropertyType.COMMERCIAL,
+        purchase_date=date(2022, 6, 1),
+        monthly_net_rent=Decimal("2000"),
+        living_area=Decimal("80"),
+        residential_units=Decimal("1"),
+        parking_units=Decimal("1"),
+        land_value_per_sqm=Decimal("500"),
+        plot_area=Decimal("600"),
+        remaining_useful_life=Decimal("50"),
+        property_yield=Decimal("5.5"),
+        actual_purchase_price=Decimal("450000"),
+    )
 
 @pytest.fixture
-def mock_valuation_service():
+def mock_valuation_service(valuation_input: ValuationInput):
     """Mock Valuation service for integration tests"""
     from back.app.schemas.valuation import (
         ValuationResult,
@@ -46,7 +69,7 @@ def mock_valuation_service():
 
     # Create a sample valuation result
     sample_result = ValuationResult(
-        input_data=Mock(),
+        input_data=valuation_input,
         cpi_used=CpiData(
             year=2024,
             month=1,
