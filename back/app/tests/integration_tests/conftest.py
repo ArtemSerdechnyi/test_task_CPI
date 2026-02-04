@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import Mock, AsyncMock
 from decimal import Decimal
 
+from back.app.services.llm_service import LLMService
 from back.main import create_app
 from back.app.schemas.valuation import ValuationInput, PropertyType
 from back.app.services.cpi_service import CpiService
@@ -107,3 +108,37 @@ def override_valuation_dependency(mock_valuation_service):
 
     return _override
 
+
+@pytest.fixture
+def mock_llm_service():
+    """Mock LLM service for integration tests"""
+    service = Mock(spec=LLMService)
+
+    # Setup async mock for get_llm_analysis
+    async def mock_analysis(*args, **kwargs):
+        return """
+        Based on the valuation analysis:
+
+        1. The theoretical value is €412,499
+        2. The actual purchase price is €500,000
+        3. Building share: 51.52%
+        4. Land share: 48.48%
+
+        The property appears to be slightly overvalued compared to the theoretical calculation.
+        """
+
+    service.get_llm_analysis = AsyncMock(side_effect=mock_analysis)
+
+    return service
+
+
+
+@pytest.fixture
+def override_llm_dependency(mock_llm_service):
+    """Override LLM service dependency"""
+    from back.app.api.dependencies import get_llm_service
+
+    def _override():
+        return mock_llm_service
+
+    return _override
