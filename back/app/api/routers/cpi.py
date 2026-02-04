@@ -14,11 +14,10 @@ def get_cpi(
     year: int,
     month: int,
     cpi_service: cpi_service_dep,
-) -> float | None:
+) -> str | None:
     """
     Get the consumer price index (CPI) for a specific month
     """
-    print('===================')
 
     if not (1 <= month <= 12):
         raise BadRequestException(detail="CPI month must be between 1 and 12")
@@ -27,7 +26,6 @@ def get_cpi(
         raise BadRequestException(detail="CPI year must be between 2002 and today.")
 
     try:
-        print('------------------------',  cpi_service.get_cpi(year=year, month=month))
         return cpi_service.get_cpi(year=year, month=month)
     except Exception as e:
         raise InternalServerException(detail=f"CPI: {str(e)}")
