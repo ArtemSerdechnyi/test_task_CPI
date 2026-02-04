@@ -30,7 +30,7 @@ class ValuationInput(BaseModel):
 class CpiData(BaseModel):
     year: int
     month: int
-    index_value: Decimal
+    index_value: float
     base_year: int = 2020
 
 

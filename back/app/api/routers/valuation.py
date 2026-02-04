@@ -39,7 +39,7 @@ async def calculate_valuation(
                 detail=f"CPI data not found for October {year - 1}"
             )
 
-        cpi_data = CpiData(year=year, month=month, index_value=float(index_value))
+        cpi_data = CpiData(year=year, month=month, index_value=index_value)
 
         result = valuation_service.calculate_valuation(input_data, cpi_data)
 
