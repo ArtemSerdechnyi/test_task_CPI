@@ -25,8 +25,8 @@ def client(app):
 def mock_cpi_service():
     service = Mock(spec=CpiService)
 
-    service.get_cpi_october_previous_year = AsyncMock(return_value=118.5)
-    service.get_cpi = AsyncMock(return_value=120.5)
+    service.get_cpi_october_previous_year = Mock(return_value=118.5)
+    service.get_cpi = Mock(return_value=120.5)
 
     return service
 
