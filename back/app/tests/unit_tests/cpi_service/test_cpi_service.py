@@ -1,7 +1,3 @@
-"""
-Unit tests for CpiService
-"""
-
 from back.app.schemas.cpi import CpiPeriod
 
 
