@@ -43,13 +43,22 @@ export class ValuationFormComponent {
       propertyType: ['residential' as PropertyType, Validators.required],
       purchaseDate: ['', Validators.required],
       monthlyNetColdRentEur: [0, [Validators.required, Validators.min(0.01)]],
-      areaSqm: [0, [Validators.required, Validators.min(0.1)]],
+      areaSqm: [0, [Validators.required, Validators.min(0.01)]],
       numberOfResidentialUnits: [1, [Validators.required, Validators.min(1)]],
       numberOfParkingUnits: [0, [Validators.required, Validators.min(0)]],
-      standardLandValueEurPerSqm: [0, [Validators.required, Validators.min(0)]],
-      plotAreaSqm: [0, [Validators.required, Validators.min(0.1)]],
-      remainingUsefulLifeYears: [0, [Validators.required, Validators.min(1)]],
-      propertyYieldPercent: [0, [Validators.required, Validators.min(0.01)]],
+      standardLandValueEurPerSqm: [
+        0,
+        [Validators.required, Validators.min(0.01)],
+      ],
+      plotAreaSqm: [0, [Validators.required, Validators.min(0.01)]],
+      remainingUsefulLifeYears: [
+        0,
+        [Validators.required, Validators.min(0.01)],
+      ],
+      propertyYieldPercent: [
+        0,
+        [Validators.required, Validators.min(0.01), Validators.max(100)],
+      ],
       actualPurchasePriceEur: [0, [Validators.required, Validators.min(0.01)]],
     });
   }
@@ -63,11 +72,14 @@ export class ValuationFormComponent {
         if (type === 'residential') {
           ctrl.enable({ emitEvent: false });
           ctrl.setValidators([Validators.required, Validators.min(1)]);
+          if (ctrl.value < 1) {
+            ctrl.setValue(1, { emitEvent: false });
+          }
         } else {
+          ctrl.setValue(1, { emitEvent: false });
           ctrl.disable({ emitEvent: false });
           ctrl.clearValidators();
         }
-
         ctrl.updateValueAndValidity({ emitEvent: false });
       });
   }
