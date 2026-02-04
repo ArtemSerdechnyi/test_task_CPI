@@ -5,6 +5,6 @@ class CPIService:
     def __init__(self, cpi_mapper: dict[CpiPeriod, str]):
         self._cpi_mapper = cpi_mapper
 
-    def get_cpi(self, year: int, month: int) -> str | None:
-        key = CpiPeriod(year=year, month=month)
+    def get_cpi(self, year: int) -> str | None:
+        key = CpiPeriod(year=year - 1, month=10)
         return self._cpi_mapper.get(key)

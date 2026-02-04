@@ -32,7 +32,7 @@ async def calculate_valuation(
         year = input_data.purchase_date.year
         month = input_data.purchase_date.month
 
-        index_value = cpi_service.get_cpi(year=year, month=month)
+        index_value = cpi_service.get_cpi(year=year)
         cpi_data = CPIData(year=year, month=month, index_value=float(index_value))
 
         result = valuation_service.calculate_valuation(input_data, cpi_data)

@@ -149,9 +149,7 @@ class ValuationService:
             maintenance=self._round_euro(maintenance),
             risk_of_rent_loss=self._round_euro(risk_of_rent_loss),
             total=self._round_euro(total),
-            risk_percentage=self._round_euro(risk_of_rent_loss)
-            / annual_gross_income
-            * 100,
+            risk_percentage = (risk_of_rent_loss / annual_gross_income) * 100
         )
 
     def _calculate_commercial_costs(
@@ -177,6 +175,7 @@ class ValuationService:
             administration=self._round_euro(administration),
             maintenance=self._round_euro(maintenance),
             risk_of_rent_loss=self._round_euro(risk_of_rent_loss),
+            risk_percentage=(risk_of_rent_loss / annual_gross_income) * 100,
             total=self._round_euro(total),
         )
 
