@@ -107,7 +107,7 @@ class TestCpiEndpoints:
 
     def test_get_cpi_valid_boundary_values(self,app, client, mock_cpi_service, override_cpi_dependency):
         """Test CPI endpoint with boundary valid values"""
-        app.dependency_overrides[get_cpi_service] = override_cpi_dependency
+        app.dependency_overrides[cpi_service_dep] = override_cpi_dependency
 
         test_cases = [
             (2024, 1),  # January
