@@ -33,6 +33,12 @@ async def calculate_valuation(
         month = input_data.purchase_date.month
 
         index_value = cpi_service.get_cpi_october_previous_year(year=year)
+
+        if index_value is None:
+            raise BadRequestException(
+                detail=f"CPI data not found for October {year - 1}"
+            )
+
         cpi_data = CPIData(year=year, month=month, index_value=float(index_value))
 
         result = valuation_service.calculate_valuation(input_data, cpi_data)
