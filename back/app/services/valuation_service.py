@@ -27,7 +27,7 @@ class ValuationService:
 
     # ROUNDING RULES
     MAINTENANCE_RATE_DECIMALS = 1
-    ADMIN_RATE_DECIMALS = 2
+    ADMIN_RATE_DECIMALS = 0
 
     def calculate_valuation(
         self, input_data: ValuationInput, cpi_data: CPIData
