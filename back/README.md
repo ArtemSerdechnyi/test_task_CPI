@@ -42,3 +42,34 @@ This backend acts as the core engine for the **KPA Tool**, handling real estate 
 - **Data Scraping**: BeautifulSoup4 & Httpx
 - **AI**: OpenAI SDK
 - **Task Resilience**: Tenacity (Retry library)
+
+## How to Run the Project
+
+Follow these steps to set up and run the project locally.
+
+### 1. Create and activate a virtual environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate   # macOS / Linux
+# .venv\Scripts\activate    # Windows
+```
+
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Create and fill the .env file
+Create a .env file in the project root and add required environment variables. Example:
+```bash
+SERVER_PORT=
+SERVER_HOST=
+FRONTEND_URLS=
+OPENAI_API_KEY=
+```
+
+### 4. Run application as module
+```bash
+python3 -m back.main
+```
