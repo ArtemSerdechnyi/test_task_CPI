@@ -3,20 +3,20 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {
-  InsightResponseDto,
   ValuationCalculateRequest,
   ValuationResponseDto,
 } from '../models/valuation.models';
+import { environment } from '../environments/environment.dev';
 
 @Injectable({ providedIn: 'root' })
 export class ValuationApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000';
+  private readonly devBaseUrl = environment.apiUrl;
 
   calculate(dto: ValuationCalculateRequest): Observable<ValuationResponseDto> {
     return this.http
       .post<ValuationResponseDto>(
-        `${this.baseUrl}/api/valuation/calculate`,
+        `${this.devBaseUrl}/api/valuation/calculate`,
         dto,
       )
       .pipe(
@@ -42,7 +42,7 @@ export class ValuationApiService {
 
   getAiAnalysis(dto: ValuationResponseDto): Observable<string> {
     return this.http
-      .post(`${this.baseUrl}/api/valuation/calculate/analysis`, dto, {
+      .post(`${this.devBaseUrl}/api/valuation/calculate/analysis`, dto, {
         responseType: 'text',
       })
       .pipe(
